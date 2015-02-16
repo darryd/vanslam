@@ -1,0 +1,42 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="main.js"></script>
+<script src="score.js"></script>
+<script src="ui.js"></script>
+<script src="performance_ui.js"></script>
+<script src="judge_ui.js"></script>
+<script src="judges_ui.js"></script>
+<script src="score_ui.js"></script>
+<script src="cum_score_ui.js"></script>
+<script src="rank_ui.js"></script>
+<script src="time_ui.js"></script>
+<script src="penalty_ui.js"></script>
+
+
+<body>
+
+  <div id="sacrifice">
+    <h2> Sacrificial Poet</h2>
+  </div>
+
+</body>
+
+
+<script>
+
+
+  darry = performance_new("darry", null);
+  george = performance_new("george", null);
+
+
+  round = round_new(5);
+  round.add_performance(darry);
+  round.add_performance(george);
+
+
+  //$("body").append(performance_ui_new(darry));
+  //$("body").append(performance_ui_new(george));
+
+
+
+
+</script>
