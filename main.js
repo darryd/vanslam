@@ -3,15 +3,27 @@
 function get_poets_name(id, add_to, round_i) {
 
   var e = document.getElementById("get_name" + id);
+  e.removeAttribute('id');
   e.setAttribute("hidden", null);
 
   e = document.getElementById("input_" + id);
+  e.removeAttribute('id');
 
   var performance = performance_new(e.value);
   global_rounds[round_i].add_performance(performance);
 
   $(add_to).append(performance_ui_new(performance));
 }
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+
+function first_round_get_poets_name(id, add_to, round_i) {
+
+  get_poets_name(id, add_to, round_i);
+  add_get_name("first_round", "#first_round", "first_round_get_poets_name('first_round', '#first_round', 1)");
+ 
+}
+
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -46,7 +58,7 @@ ready = function() {
 
   var round_one = round_new(num_places);
 
-  add_get_name("first_round", "#first_round", "get_poets_name('first_round', '#first_round', 1)");
+  add_get_name("first_round", "#first_round", "first_round_get_poets_name('first_round', '#first_round', 1)");
 
 }
 
