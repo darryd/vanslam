@@ -102,7 +102,7 @@ performance_new = function (name, prev) {
     this.judges[judge_num] = score;
     this.calculate();
 
-  } // 1 = first place, 2, second place, etc...
+  }
   /*--------------------------------------------------------------------------------------------------------------------------------*/
   performance.find_min_judge = function() {
 

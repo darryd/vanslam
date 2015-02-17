@@ -1,13 +1,16 @@
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
-function get_poets_name() {
+function get_poets_name(id, add_to, round_i) {
 
-  var e = document.getElementById("sacrifice_get_name");
+  var e = document.getElementById("get_name" + id);
   e.setAttribute("hidden", null);
 
-  e = document.getElementById("input_sacrifice_get_name");
+  e = document.getElementById("input_" + id);
 
-  $("#sacrifice").append(performance_ui_new(performance_new(e.value, null)));
+  var performance = performance_new(e.value);
+  global_rounds[round_i].add_performance(performance);
+
+  $(add_to).append(performance_ui_new(performance));
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
@@ -15,7 +18,7 @@ function get_poets_name() {
 function add_get_name(id, add_to, on_change) {
 
   var div = document.createElement("div");
-  div.id = id;
+  div.id = "get_name" + id;
 
   div.appendChild(document.createTextNode("Enter poet's name:"));
   input = document.createElement("input");
@@ -29,10 +32,25 @@ function add_get_name(id, add_to, on_change) {
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
-ready = function() {
-   
-  add_get_name("sacrifice_get_name", "#sacrifice", "get_poets_name()");
+ready = function() { 
+
+
+  global_rounds = [];
+  global_rounds[0] = round_new(0);
+  global_rounds[1] = round_new(5);
+  global_rounds[2] = round_new(0);
+
+  var num_places = 5;
+
+  add_get_name("sacrifice", "#sacrifice", "get_poets_name('sacrifice', '#sacrifice', 0)");
+
+  var round_one = round_new(num_places);
+
+  add_get_name("first_round", "#first_round", "get_poets_name('first_round', '#first_round', 1)");
 
 }
+
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
 
 $(document).ready(ready);
