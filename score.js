@@ -229,6 +229,7 @@ round_new = function (num_places) {
       var ranking = rankings.indexOf(cum_score) + 1;
       me.performances[i].set_rank(ranking);
     }
+    me.notify_rank();
   }  
 
   /*-------------------------------------------------------------------------------------------------------------------------------*/
@@ -260,7 +261,7 @@ round_new = function (num_places) {
   //
   //   result.winners: an array of winners
   //   result.result: 0 if successful, otherwise the number of the 'place' (1st place, 2nd place, etc) where there were too many ties.
-  //   result.over_flow: an array of 'place' containing too many ties.
+  //   result.overflow: an array of 'place' containing too many ties.
 
 
   round.get_winners = function() {
@@ -280,7 +281,7 @@ round_new = function (num_places) {
 	// Too many ties....
 	
 	result.result = i;
-	result.over_flow = winners[i];
+	result.overflow = winners[i];
       }
     
     if (result.result == 0 && result.winners.length < this.num_places) {
@@ -292,7 +293,7 @@ round_new = function (num_places) {
       }
       else {
 	result.result = this.num_places;
-	result.over_flow = winners[this.num_places];
+	result.overflow = winners[this.num_places];
       }
     }
 
@@ -306,7 +307,32 @@ round_new = function (num_places) {
     this.performances.push(performance);
 
   }
+
   /*--------------------------------------------------------------------------------------------------------------------------------*/
+  round.call_backs = [];
+  /*--------------------------------------------------------------------------------------------------------------------------------*/
+  // Notify that the rank has been (re)calculated.
+
+  round.add_notify_rank = function(func, owner) {
+
+    var data = {func: func, owner: owner};
+    this.call_backs.push(data);
+  }
+
+  /*--------------------------------------------------------------------------------------------------------------------------------*/
+
+  round.notify_rank = function() {
+
+    for (var i=0; i<this.call_backs.length; i++) {
+
+      var func = this.call_backs[i].func;
+      var owner = this.call_backs[i].owner;
+
+      func(owner, this);
+    }
+  }
+  /*--------------------------------------------------------------------------------------------------------------------------------*/
+
   return round;
 
 }

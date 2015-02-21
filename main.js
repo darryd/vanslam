@@ -47,10 +47,12 @@ function add_get_name(id, add_to, on_change) {
 // Hides and removes the id attribute.
 function remove_by_id(id) {
 
-  e = document.getElementById(id);
-  e.removeAttribute(id);
-  e.setAttribute('hidden', null);
+  var e = document.getElementById(id);
 
+  if (e != null) {
+    e.removeAttribute(id);
+    e.setAttribute('hidden', null);
+  }
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
@@ -75,53 +77,99 @@ function add_performer_to_second_round() {
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
-function add_get_name_2(on_change) {
-
-  var div = document.createElement("div");
-  div.id = "get_name2";
-
-  div.appendChild(document.createTextNode("Select poet's name:"));
-
-  var s = document.createElement("select");
-  s.id = "get_name2_select";
-  s.setAttribute('onchange', 'add_performer_to_second_round()');
-
-  var winners = global_rounds[1].get_winners();
+function add_performer_to_2nd_round(performance) {
 
 
-  o = document.createElement("option");
-  o.value = null;
-  o.text = "None";
-  s.appendChild(o);
+  var performance2 = performance_new(performance.name, performance);
+  global_rounds[2].add_performance(performance2);
+  $("#second_round").append(performance_ui_new(performance2));
 
-
-  for (var i=0; i<winners.length; i++) {
-
-    if (global_rounds[2].performances.indexOf(winners[i]) == -1) {
-
-      o = document.createElement("option");
-      o.value = winners[i];
-      o.text = winners[i].name;
-
-      s.appendChild(o);
-      div.appendChild(s);
-    }
-  }
-  $("#second_round").append(div);
+  global_rounds[2]._performances.push(performance) // ugly hack :(
+  show_2nd_round_buttons();
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
+// For adding a poet to the second round.
+function performance_to_button(performance) {
+
+  var button = document.createElement("button");
+  var text = document.createTextNode(performance.name);
+
+  button.performance = performance;
+  button.setAttribute("onClick", "add_performer_to_2nd_round(this.performance)");
+
+  button.appendChild(text);
+
+  return button;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+
+function get_second_round_poet_buttons() {
+
+  var result = global_rounds[1].get_winners();
+
+  var div = document.createElement("div");
+  div.id = "second_round_buttons";
+
+  var p = document.createElement("p");
+  p.innerHTML = "Select next poet.";
+  div.appendChild(p);
+
+  for (var i=0; i<result.winners.length; i++) {
+
+    var performance = result.winners[i];
+
+    if (global_rounds[2]._performances.indexOf(performance) == -1) {
+      var button = performance_to_button(result.winners[i]);
+      div.appendChild(button);
+    }
+  }
+
+  if (result.result != 0) {
+
+    var div2 = document.createElement("div");
+    var p = document.createTextNode("Overflow from the " + places[result.result] + " round:");
+    div2.appendChild(p);
+    for (var i=0; i<result.overflow.length; i++) {
+
+      var performance = result.overflow[i];
+      if (global_rounds[2]._performances.indexOf(performance) == -1) {
+	var button = performance_to_button(result.overflow[i]);
+	div2.appendChild(button);
+      }
+    }
+    div.appendChild(div2);
+  }
+
+  return div;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+show_2nd_round_buttons = function() {
+
+  $("#second_round_buttons").remove();
+
+  var div = get_second_round_poet_buttons();
+
+  $("#second_round").append(div);
+
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
 ready = function() { 
 
   global_rounds = [];
   global_rounds[0] = round_new(0);
   global_rounds[1] = round_new(5);
   global_rounds[2] = round_new(0);
+  global_rounds[2]._performances = [] // Ugly hack
 
   add_get_name("sacrifice", "#sacrifice", "get_poets_name('sacrifice', '#sacrifice', 0)");
   add_get_name("first_round", "#first_round", "first_round_get_poets_name('first_round', '#first_round', 1)");
 
+  global_rounds[1].add_notify_rank(show_2nd_round_buttons);
 }
 
 
