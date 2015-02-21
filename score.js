@@ -1,6 +1,8 @@
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
+var places = ["first", "second", "third", "fouth", "fifth"];
+
 var num_rounds = 2;
 var num_judges = 5;
 var time_limit = 3 * 60;
@@ -216,15 +218,15 @@ round_new = function (num_places) {
     var rankings = [];
 
     for (var i=0; i<me.performances.length; i++)
-      if (rankings.indexOf(me.performances[i].score) == -1)
-	  rankings.push(me.performances[i].score);
+      if (rankings.indexOf(me.performances[i].cum_score) == -1)
+	  rankings.push(me.performances[i].cum_score);
 
     rankings.sort(function(a, b){return b - a;});
 
     for (var i=0; i<me.performances.length; i++) {
 
-      var score = me.performances[i].score;
-      var ranking = rankings.indexOf(score) + 1;
+      var cum_score = me.performances[i].cum_score;
+      var ranking = rankings.indexOf(cum_score) + 1;
       me.performances[i].set_rank(ranking);
     }
   }  
@@ -234,9 +236,22 @@ round_new = function (num_places) {
   round.get_winners = function() {
 
     var winners = [];
-    for (var i=0; i<this.performances.length; i++)
-      if (this.performances[i].rank <= this.num_places)
-	winners.push(this.performances[i]);
+    var actual_winners =[];
+
+    winners.push(null);
+    for (var i=1; i<=this.num_places; i++)
+      winners.push([]);
+
+    for (var i=0; i<this.performances.length; i++) {
+      
+      var rank = this.performances[i].rank;
+      if (rank <= num_places)
+	winners[rank].push(this.performances[i]);
+    }
+
+
+
+
 
     return winners;
   }
