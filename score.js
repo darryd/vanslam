@@ -233,10 +233,10 @@ round_new = function (num_places) {
 
   /*-------------------------------------------------------------------------------------------------------------------------------*/
 
-  round.get_winners = function() {
+  round._get_winners = function() {
 
     var winners = [];
-    var actual_winners =[];
+    var result = {};
 
     winners.push(null);
     for (var i=1; i<=this.num_places; i++)
@@ -249,11 +249,54 @@ round_new = function (num_places) {
 	winners[rank].push(this.performances[i]);
     }
 
-
-
-
-
     return winners;
+  }
+  /*-------------------------------------------------------------------------------------------------------------------------------*/
+
+  // Returns a hash 
+  //  
+  //   So in the Winter Sesion of Vancouver Poetry Slam there are 5 winners unless there's a tie for 5th place.
+  //   If that happens then there will be 6 winners.
+  //
+  //   result.winners: an array of winners
+  //   result.result: 0 if successful, otherwise the number of the 'place' (1st place, 2nd place, etc) where there were too many ties.
+  //   result.over_flow: an array of 'place' containing too many ties.
+
+
+  round.get_winners = function() {
+
+    var result = {};
+    var winners = this._get_winners();
+
+    result.result = 0;
+    result.winners = [];
+
+    // Winners for all but the last 'place'
+    for (var i=1; i<this.num_places && result.winners.length < this.num_places; i++)
+      if (result.winners.length + winners[i].length <= this.num_places) {
+	var _winners = result.winners.concat(winners[i]);
+	result.winners = _winners;
+      } else {
+	// Too many ties....
+	
+	result.result = i;
+	result.over_flow = winners[i];
+      }
+    
+    if (result.result == 0 && result.winners.length < this.num_places) {
+      // In the event of a tie, this.num_places + 1 is acceptable....
+      if (result.winners.length + winners[this.num_places].length <= this.num_places + 1) {
+
+	var _winners = result.winners.concat(winners[this.num_places]);
+	result.winners = _winners;
+      }
+      else {
+	result.result = this.num_places;
+	result.over_flow = winners[this.num_places];
+      }
+    }
+
+    return result;
   }
   /*-------------------------------------------------------------------------------------------------------------------------------*/
 
