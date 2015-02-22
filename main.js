@@ -130,7 +130,7 @@ function get_second_round_poet_buttons() {
   if (result.result != 0) {
 
     var div2 = document.createElement("div");
-    var p = document.createTextNode("Overflow from the " + places[result.result] + " round:");
+    var p = document.createTextNode("Overflow! Too many poets tied in " + places[result.result] + " place:");
     div2.appendChild(p);
     for (var i=0; i<result.overflow.length; i++) {
 
