@@ -231,11 +231,6 @@ performance_new = function (name, prev) {
     me.score -= me.penalty;
     me.score -= me.calculate_time_penalty();
 
-    me.cum_score = me.score;
-    if (me.prev != null)
-      me.cum_score += me.prev.cum_score;
-
-
     me.notify_score();
   }
 
@@ -271,15 +266,6 @@ performance_new = function (name, prev) {
 
 
   performance.subscore = 0;
-
-
-  if (prev != null) {
-    performance.cum_score = prev.cum_score;
-    prev.add_notify_score(performance.calculate, performance);
-
-  }
-  else
-    performance.cum_score = 0;
 
   performance.call_backs_score = [];
   performance.call_backs_rank = [];
