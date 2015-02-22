@@ -34,7 +34,7 @@ function time_penalty_update(data) {
   if (data.performance.calculate_time_penalty() != 0)
     data.p.innerHTML = "Time penalty: " + data.performance.calculate_time_penalty();
   else
-    data.p.innterHTML = "";
+    data.p.innerHTML = "";
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
