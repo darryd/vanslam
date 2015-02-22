@@ -18,8 +18,25 @@ time_ui_new = function (performance) {
   insert_into_table(table, minute_table);
   insert_into_table(table, second_table);
 
+  /*
+  var tr = document.createElement("tr");
+  var p = document.createElement("p");
+
+  table.appendChild(tr);
+  tr.appendChild(p);
+  */
+
   return table;
 }
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+function time_penalty_update(data) {
+
+  if (data.performance.calculate_time_penalty() != 0)
+    data.p.innerHTML = "Time penalty: " + data.performance.calculate_time_penalty();
+  else
+    data.p.innterHTML = "";
+}
+
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 function parse_int_or_return_zero(val) {

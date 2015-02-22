@@ -24,6 +24,14 @@ function performance_ui_new(performance) {
   table.appendChild(table.tr);
   insert_into_table(table, document.createTextNode("Enter scores multiplied by 10."));
 
+  
+  var p = document.createElement("p");
+  insert_into_table(table, p);
+  
+  // Another field to show time penalty.
+  var data = {p: p, performance: performance};
+  performance.add_notify_score(time_penalty_update, data);
+  time_penalty_update(data);
 
   return table;
 }

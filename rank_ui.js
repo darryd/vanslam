@@ -12,7 +12,7 @@ rank_ui_new = function(performance) {
 
   tr = document.createElement("tr");
   td = document.createElement("td");
-  p = document.createElement("p");
+  var p = document.createElement("p");
   p.innerHTML = performance.rank;
 
   td.appendChild(p);
