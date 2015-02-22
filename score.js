@@ -66,8 +66,10 @@ poet_new = function (name) {
       me = this;
 
     me.total_score = 0;
-    for (var i=0; i< me.performances.length; i++)
+    for (var i=0; i< me.performances.length; i++) {
       me.total_score += me.performances[i].score;
+      me.performances[i].subscore = me.total_score;
+    }
 
     me.notify_score.notify();
   }
@@ -267,6 +269,10 @@ performance_new = function (name, prev) {
   performance.score = 0;
   performance.rank = Infinity; // 1 = first place, 2, second place, etc...
 
+
+  performance.subscore = 0;
+
+
   if (prev != null) {
     performance.cum_score = prev.cum_score;
     prev.add_notify_score(performance.calculate, performance);
@@ -303,15 +309,15 @@ round_new = function (num_places) {
     var rankings = [];
 
     for (var i=0; i<me.performances.length; i++)
-      if (rankings.indexOf(me.performances[i].cum_score) == -1)
-	rankings.push(me.performances[i].cum_score);
+      if (rankings.indexOf(me.performances[i].subscore) == -1)
+	rankings.push(me.performances[i].subscore);
 
     rankings.sort(function(a, b){return b - a;});
 
     for (var i=0; i<me.performances.length; i++) {
 
-      var cum_score = me.performances[i].cum_score;
-      var ranking = rankings.indexOf(cum_score) + 1;
+      var subscore = me.performances[i].subscore;
+      var ranking = rankings.indexOf(subscore) + 1;
       me.performances[i].set_rank(ranking);
     }
     me.notify_rank();

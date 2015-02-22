@@ -15,6 +15,7 @@ function performance_ui_new(performance) {
   insert_into_table(table, time_ui_new(performance));
   insert_into_table(table, penalty_ui_new(performance));
   insert_into_table(table, score_ui_new(performance));
+  insert_into_table(table, subscore_ui_new(performance));
   insert_into_table(table, cum_score_ui_new(performance));
   insert_into_table(table, rank_ui_new(performance));
 
