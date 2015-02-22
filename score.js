@@ -10,6 +10,74 @@ var grace_time = 10;
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
+notify_new = function(me) {
+
+  var notify = {};
+
+  notify.me = me;
+  notify.call_backs = [];
+
+  /*-------------------------------------------------------------------------------------------------------------------------------*/
+  notify.notify = function () {
+
+    for (var i=0; i<this.call_backs.length; i++) {
+
+      var func = this.call_backs[i].func;
+      var owner = this.call_backs[i].owner;
+
+      func(owner, this.me);
+    }
+  }
+  /*-------------------------------------------------------------------------------------------------------------------------------*/
+
+  notify.add_notify = function(func, owner) {
+
+    var data = {func: func, owner: owner};
+    this.call_backs.push(data);
+  }
+
+  /*--------------------------------------------------------------------------------------------------------------------------------*/
+
+  return notify;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+
+poet_new = function (name) {
+
+  var poet = {};
+  poet.name = name;
+  poet.total_score = 0;
+  poet.performances = [];
+  poet.notify_score = notify_new(poet);
+
+  /*-------------------------------------------------------------------------------------------------------------------------------*/
+
+  poet.add_performance = function(performance) {
+
+    this.performances.push(performance);
+    performance.add_notify_score(this.calculate, this)
+
+  }
+  /*-------------------------------------------------------------------------------------------------------------------------------*/
+  poet.calculate = function(me) {
+
+    if (typeof me === 'undefined')
+      me = this;
+
+    me.total_score = 0;
+    for (var i=0; i< me.performances.length; i++)
+      me.total_score += me.performances[i].score;
+
+    me.notify_score.notify();
+  }
+  /*-------------------------------------------------------------------------------------------------------------------------------*/
+
+  return poet;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+
 performance_new = function (name, prev) {
 
   var performance = {};
@@ -130,14 +198,14 @@ performance_new = function (name, prev) {
       if (max_score < this.judges[i] && i != this.min_judge) {
 	max_score = this.judges[i];
 	this.max_judge = i;
-     }
+      }
   }
   /*--------------------------------------------------------------------------------------------------------------------------------*/
 
   performance.add_up_judges = function() {
-    
+
     var sum = 0;
-    
+
     this.find_min_judge();
     this.find_max_judge();
 
@@ -153,23 +221,38 @@ performance_new = function (name, prev) {
 
   performance.calculate = function(me) {
 
-   if (typeof me === 'undefined')
-     me = this;
+    if (typeof me === 'undefined')
+      me = this;
 
-   me.score = 0;
-   me.score += me.add_up_judges(); 
-   me.score -= me.penalty;
-   me.score -= me.calculate_time_penalty();
+    me.score = 0;
+    me.score += me.add_up_judges(); 
+    me.score -= me.penalty;
+    me.score -= me.calculate_time_penalty();
 
-   me.cum_score = me.score;
-   if (me.prev != null)
-     me.cum_score += me.prev.cum_score;
+    me.cum_score = me.score;
+    if (me.prev != null)
+      me.cum_score += me.prev.cum_score;
 
 
-   me.notify_score();
+    me.notify_score();
   }
 
   /*--------------------------------------------------------------------------------------------------------------------------------*/
+
+  performance.init = function(name, prev) {
+
+    if (prev == null) 
+      this.poet = poet_new(name);
+    else
+      this.poet = prev.poet;
+
+    this.poet.add_performance(this);
+  }
+
+
+
+  /*--------------------------------------------------------------------------------------------------------------------------------*/
+
 
   performance.name = name;
   performance.prev = prev;
@@ -195,6 +278,8 @@ performance_new = function (name, prev) {
   performance.call_backs_score = [];
   performance.call_backs_rank = [];
 
+  performance.init(name, prev);
+
   return performance;
 }
 
@@ -219,7 +304,7 @@ round_new = function (num_places) {
 
     for (var i=0; i<me.performances.length; i++)
       if (rankings.indexOf(me.performances[i].cum_score) == -1)
-	  rankings.push(me.performances[i].cum_score);
+	rankings.push(me.performances[i].cum_score);
 
     rankings.sort(function(a, b){return b - a;});
 
@@ -244,7 +329,7 @@ round_new = function (num_places) {
       winners.push([]);
 
     for (var i=0; i<this.performances.length; i++) {
-      
+
       var rank = this.performances[i].rank;
       if (rank <= num_places)
 	winners[rank].push(this.performances[i]);
@@ -279,11 +364,11 @@ round_new = function (num_places) {
 	result.winners = _winners;
       } else {
 	// Too many ties....
-	
+
 	result.result = i;
 	result.overflow = winners[i];
       }
-    
+
     if (result.result == 0 && result.winners.length < this.num_places) {
       // In the event of a tie, this.num_places + 1 is acceptable....
       if (result.winners.length + winners[this.num_places].length <= this.num_places + 1) {
@@ -302,9 +387,9 @@ round_new = function (num_places) {
   /*-------------------------------------------------------------------------------------------------------------------------------*/
 
   round.add_performance = function(performance) {
-  
+
     performance.add_notify_score(this.rank, this)  
-    this.performances.push(performance);
+      this.performances.push(performance);
 
   }
 

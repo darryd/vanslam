@@ -21,8 +21,10 @@ cum_score_ui_new = function(performance) {
 
   table.border = "0";
 
-  performance.add_notify_score(update_cum_score_ui, p);
-  update_cum_score_ui(p, performance);
+  //performance.add_notify_score(update_cum_score_ui, p);
+  update_cum_score_ui(p, performance.poet);
+
+  performance.poet.notify_score.add_notify(update_cum_score_ui, p);
 
   return table;
 }
@@ -30,9 +32,9 @@ cum_score_ui_new = function(performance) {
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
-function update_cum_score_ui(p, performance) {
+function update_cum_score_ui(p, poet) {
 
-  p.innerHTML = Math.round(performance.cum_score * 100) / 100;
+  p.innerHTML = Math.round(poet.total_score * 100) / 100;
 }
 
 
