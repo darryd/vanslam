@@ -72,7 +72,7 @@ function remove_inputs_that_should_have_lost_focus() {
 
   var inputs = document.getElementsByClassName("input_change_name");
   for (var i=0; i< inputs.length; i++)
-    change_input_to_change_name(inputs[i].parent_id);
+    change_input_to_link(inputs[i].parent_id);
 
 }
 
@@ -92,16 +92,21 @@ function create_input_to_change_name(id, name) {
   input.setAttribute("class", "input_change_name");
   input.value = performance.name;
   input.performance = performance;
-  input.setAttribute("onchange", "change_input_to_change_name('" + id + "')");
-  input.setAttribute("onblur", "change_input_to_change_name('" + id + "')");
-  input.setAttribute("onfocusout", "change_input_to_change_name('" + id + "')");
+  input.setAttribute("onchange", "change_input_to_link('" + id + "')");
+  input.setAttribute("onblur", "change_input_to_link('" + id + "')");
+  input.setAttribute("onfocusout", "change_input_to_link('" + id + "')");
 
   $("#" + id).append(input);
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-// TODO: Rename function.
-function change_input_to_change_name(id) {
+// From: http://stackoverflow.com/a/3261380
+function isBlank(str) {
+  return (!str || /^\s*$/.test(str));
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+function change_input_to_link(id) {
 
   var input = document.getElementById("input_change_name_" + id);
   var name = input.value;
@@ -109,7 +114,8 @@ function change_input_to_change_name(id) {
 
   $("#input_change_name_" + id).remove();
 
-  performance.poet.set_name(name);
+  if (!isBlank(name))
+    performance.poet.set_name(name);
   var a = create_link_to_change_name(id, performance);
   $("#" + id).append(a);
 }
@@ -118,11 +124,11 @@ function change_input_to_change_name(id) {
 // From: http://stackoverflow.com/a/1349426
 function makeid(length)
 {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for( var i=0; i < length; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+  for( var i=0; i < length; i++ )
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-    return text;
+  return text;
 }
