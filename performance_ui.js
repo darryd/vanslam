@@ -18,10 +18,6 @@ function performance_ui_new(performance) {
 
   insert_into_table(table, div);
 
-  
-
-
-
   table.tr = document.createElement("tr");
   table.appendChild(table.tr);
 
@@ -57,7 +53,6 @@ update_link_on_name_change = function(id) {
   if (a != null)
     a.innerHTML = a.performance.poet.name;
 }
-
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 function create_link_to_change_name(id, performance) {
 
@@ -70,7 +65,22 @@ function create_link_to_change_name(id, performance) {
   return a;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
+// Sometimes an input doesn't lose focus even though it should. 
+// So if a new input is created, we'll remove the other ones.
+
+function remove_inputs_that_should_have_lost_focus() {
+
+  var inputs = document.getElementsByClassName("input_change_name");
+  for (var i=0; i< inputs.length; i++)
+    change_input_to_change_name(inputs[i].parent_id);
+
+}
+
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
 function create_input_to_change_name(id, name) {
+
+  remove_inputs_that_should_have_lost_focus();
 
   var performance = document.getElementById("link_change_name_" + id).performance;
 
@@ -78,16 +88,19 @@ function create_input_to_change_name(id, name) {
 
   var input = document.createElement("input");
   input.id = "input_change_name_" + id;
+  input.parent_id = id;
+  input.setAttribute("class", "input_change_name");
   input.value = performance.name;
   input.performance = performance;
   input.setAttribute("onchange", "change_input_to_change_name('" + id + "')");
   input.setAttribute("onblur", "change_input_to_change_name('" + id + "')");
+  input.setAttribute("onfocusout", "change_input_to_change_name('" + id + "')");
 
   $("#" + id).append(input);
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-
+// TODO: Rename function.
 function change_input_to_change_name(id) {
 
   var input = document.getElementById("input_change_name_" + id);
