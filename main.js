@@ -94,15 +94,26 @@ function add_performer_to_2nd_round(performance) {
 function performance_to_button(performance) {
 
   var button = document.createElement("button");
-  var text = document.createTextNode(performance.name);
+  button.text = document.createTextNode(performance.name);
 
   button.performance = performance;
   button.setAttribute("onClick", "add_performer_to_2nd_round(this.performance)");
 
-  button.appendChild(text);
+  performance.poet.notify_name.add_notify(button_name_update, button);
+
+  button.appendChild(button.text);
 
   return button;
 }
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+
+button_name_update = function(button) {
+
+  button.text.nodeValue = button.performance.poet.name;
+
+}
+
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 

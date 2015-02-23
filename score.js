@@ -50,6 +50,20 @@ poet_new = function (name) {
   poet.total_score = 0;
   poet.performances = [];
   poet.notify_score = notify_new(poet);
+  poet.notify_name = notify_new(poet);
+
+  /*-------------------------------------------------------------------------------------------------------------------------------*/
+
+  poet.set_name = function(name) {
+
+    this.name = name;
+
+    for (var i=0; i<this.performances.length; i++)
+      this.performances[i].name = name;
+
+    this.notify_name.notify();
+  }
+
 
   /*-------------------------------------------------------------------------------------------------------------------------------*/
 

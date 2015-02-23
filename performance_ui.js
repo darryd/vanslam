@@ -7,7 +7,21 @@ function performance_ui_new(performance) {
   table.appendChild(table.tr);
   table.border = "1";
 
-  insert_into_table(table, document.createTextNode(performance.name));
+
+  var div = document.createElement("div");
+  div.id = makeid(999);
+  var a = create_link_to_change_name(div.id, performance);
+
+  performance.poet.notify_name.add_notify(update_link_on_name_change, "link_change_name_" + div.id);
+
+  div.appendChild(a);
+
+  insert_into_table(table, div);
+
+  
+
+
+
   table.tr = document.createElement("tr");
   table.appendChild(table.tr);
 
@@ -35,5 +49,67 @@ function performance_ui_new(performance) {
 
   return table;
 }
+/*----------------------------------------------------------------------------------------------------------------------------------*/
 
+update_link_on_name_change = function(id) {
 
+  var a = document.getElementById(id);
+  if (a != null)
+    a.innerHTML = a.performance.poet.name;
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+function create_link_to_change_name(id, performance) {
+
+  var a = document.createElement("a");
+  a.id = "link_change_name_" + id;
+  a.innerHTML = performance.name;
+  a.setAttribute("href", "javascript:create_input_to_change_name('" + id + "'" + ", '" + performance.name + "')");
+  a.performance = performance;
+
+  return a;
+}
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+function create_input_to_change_name(id, name) {
+
+  var performance = document.getElementById("link_change_name_" + id).performance;
+
+  $("#link_change_name_" + id).remove();
+
+  var input = document.createElement("input");
+  input.id = "input_change_name_" + id;
+  input.value = performance.name;
+  input.performance = performance;
+  input.setAttribute("onchange", "change_input_to_change_name('" + id + "')");
+  input.setAttribute("onblur", "change_input_to_change_name('" + id + "')");
+
+  $("#" + id).append(input);
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+
+function change_input_to_change_name(id) {
+
+  var input = document.getElementById("input_change_name_" + id);
+  var name = input.value;
+  var performance = input.performance;
+
+  $("#input_change_name_" + id).remove();
+
+  performance.poet.set_name(name);
+  var a = create_link_to_change_name(id, performance);
+  $("#" + id).append(a);
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------*/
+// From: http://stackoverflow.com/a/1349426
+function makeid(length)
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < length; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
