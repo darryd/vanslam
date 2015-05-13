@@ -84,7 +84,7 @@ function add_performer_to_2nd_round(performance) {
   global_rounds[2].add_performance(performance2);
   $("#second_round").append(performance_ui_new(performance2));
 
-  global_rounds[2]._performances.push(performance) // ugly hack :(
+  global_rounds[2]._performances.push(performance)
   show_2nd_round_buttons();
 }
 
@@ -175,7 +175,7 @@ ready = function() {
   global_rounds[0] = round_new(0);
   global_rounds[1] = round_new(5);
   global_rounds[2] = round_new(0);
-  global_rounds[2]._performances = [] // Ugly hack
+  global_rounds[2]._performances = [];
 
   add_get_name("sacrifice", "#sacrifice", "get_poets_name('sacrifice', '#sacrifice', 0)");
   add_get_name("first_round", "#first_round", "first_round_get_poets_name('first_round', '#first_round', 1)");
